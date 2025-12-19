@@ -11,7 +11,7 @@ const Header = ({ globalCount }) => {
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold tracking-widest uppercase">
                     <Cpu size={12} /> System Status: Online
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black tracking-tighter bg-gradient-to-r from-white via-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                <h1 className="text-3xl md:text-6xl font-black tracking-tighter bg-gradient-to-r from-white via-cyan-400 to-purple-500 bg-clip-text text-transparent">
                     NEO SCAN
                 </h1>
             </div>

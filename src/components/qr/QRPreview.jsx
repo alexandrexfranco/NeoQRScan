@@ -89,7 +89,7 @@ const QRPreview = ({
     };
 
     return (
-        <div className="relative w-full max-w-[300px] aspect-[9/18] md:h-[600px] md:aspect-auto bg-slate-950 rounded-[2.5rem] md:rounded-[3.5rem] border-[8px] border-slate-800 shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden mx-auto">
+        <div className="relative w-full max-w-[280px] md:max-w-[300px] aspect-[9/16] md:aspect-auto md:h-[600px] bg-slate-950 rounded-[2rem] md:rounded-[3.5rem] border-[6px] md:border-[8px] border-slate-800 shadow-2xl overflow-hidden mx-auto transition-all">
             <canvas ref={canvasRef} width={size} height={size} className="hidden" />
 
             <div className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-6 md:px-8 z-20">
@@ -97,7 +97,7 @@ const QRPreview = ({
                 <div className="flex items-center gap-1.5 text-white/70"><Signal size={10} /><Wifi size={10} /><Battery size={10} className="rotate-90" /></div>
             </div>
 
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-black p-6 flex flex-col items-center pt-12 md:pt-16 overflow-y-auto no-scrollbar">
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-900 to-black p-4 md:p-6 flex flex-col items-center pt-10 md:pt-16 overflow-y-auto no-scrollbar">
                 <div className="w-full mb-6 md:mb-8 text-center space-y-1 flex-shrink-0">
                     <div className="w-10 h-10 md:w-12 md:h-12 bg-cyan-500/20 rounded-2xl mx-auto flex items-center justify-center border border-cyan-500/30 mb-3 md:mb-4">
                         <Maximize size={20} className="text-cyan-400" />

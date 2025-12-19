@@ -41,7 +41,7 @@ function App() {
                         />
                     </div>
 
-                    <div className="lg:col-span-5 flex justify-center py-4 order-first lg:order-last">
+                    <div className="lg:col-span-5 flex justify-center py-4 lg:order-last">
                         <QRPreview
                             text={text}
                             fgColor={fgColor}
