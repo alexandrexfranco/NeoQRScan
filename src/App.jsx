@@ -26,7 +26,7 @@ function App() {
 
     return (
         <Layout>
-            <div className="relative z-10 max-w-7xl mx-auto px-4 py-6 md:py-8">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 py-6 md:py-8 pb-20 md:pb-12">
                 <Header globalCount={globalCount} />
 
                 <main className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">

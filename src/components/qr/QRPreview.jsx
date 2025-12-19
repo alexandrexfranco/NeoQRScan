@@ -89,7 +89,7 @@ const QRPreview = ({
     };
 
     return (
-        <div className="relative w-full max-w-[280px] md:max-w-[300px] aspect-[9/16] md:aspect-auto md:h-[600px] bg-slate-950 rounded-[2rem] md:rounded-[3.5rem] border-[6px] md:border-[8px] border-slate-800 shadow-2xl overflow-hidden mx-auto transition-all">
+        <div className="relative w-full max-w-[280px] md:max-w-[300px] h-auto min-h-[500px] md:h-[600px] aspect-[9/18] md:aspect-auto bg-slate-950 rounded-[2rem] md:rounded-[3.5rem] border-[6px] md:border-[8px] border-slate-800 shadow-2xl overflow-hidden mx-auto transition-all bg-black">
             <canvas ref={canvasRef} width={size} height={size} className="hidden" />
 
             <div className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-6 md:px-8 z-20">

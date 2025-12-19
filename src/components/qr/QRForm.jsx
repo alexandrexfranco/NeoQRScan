@@ -84,15 +84,15 @@ const QRForm = ({
     return (
         <div className="space-y-6">
             <div className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-                <div className="flex bg-black/40 border-b border-white/5 overflow-x-auto no-scrollbar scroll-smooth">
+                <div className="grid grid-cols-3 sm:grid-cols-6 bg-black/40 border-b border-white/5">
                     {tabs.map(tab => (
-                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`min-w-[80px] md:min-w-[100px] flex-1 flex flex-col items-center justify-center gap-1 py-4 text-[9px] font-bold tracking-widest transition-all whitespace-nowrap px-2 ${activeTab === tab.id ? 'bg-cyan-500/10 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}>
+                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex flex-col items-center justify-center gap-1 py-3 md:py-4 text-[9px] font-bold tracking-widest transition-all ${activeTab === tab.id ? 'bg-cyan-500/10 text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-500 hover:text-slate-300 border-b-2 border-transparent'}`}>
                             <tab.Icon size={16} /> {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="p-6 md:p-8">
+                <div className="p-4 md:p-8">
                     <div className="mb-4 flex items-center gap-2">
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Entrada de Dados</label>
                         <Tooltip content="Escolha o tipo de dado para que o QR Code seja formatado corretamente." />
