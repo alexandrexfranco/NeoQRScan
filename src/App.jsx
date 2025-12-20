@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import Layout from './components/layout/Layout';
 import QRForm from './components/qr/QRForm';
 import QRPreview from './components/qr/QRPreview';
-import { logScan } from './services/GoogleSheetsService';
+import { logScan, getGlobalCount } from './services/GoogleSheetsService';
 
 function App() {
     // State
@@ -13,15 +13,28 @@ function App() {
     const [bgColor, setBgColor] = useState('#0a0a12');
     const [size, setSize] = useState(512);
     const [includeMargin, setIncludeMargin] = useState(true);
+    const [fontSize, setFontSize] = useState(16); // Keeping previous states if any
     const [logoPreview, setLogoPreview] = useState(null);
+
+    // Advanced Style State
+    const [styleOptions, setStyleOptions] = useState({
+        dots: 'square', // square, dots, rounded, extra-rounded, classy, classy-rounded
+        markerBorder: 'square', // square, dot, extra-rounded
+        markerCenter: 'square' // square, dot
+    });
 
     // Counts (Mock for now, will connect to sheets)
     const [globalCount, setGlobalCount] = useState(0);
 
+    useEffect(() => {
+        getGlobalCount().then(c => setGlobalCount(c));
+    }, []);
+
     // Helper to handle download which logs stats
     const handleDownloadStats = () => {
+        // Optimistic update
         setGlobalCount(prev => prev + 1);
-        logScan({ type: 'download', format: activeTab });
+        logScan({ type: 'download', format: activeTab, content: text });
     };
 
     return (
@@ -38,6 +51,7 @@ function App() {
                             bgColor={bgColor} setBgColor={setBgColor}
                             logoPreview={logoPreview} setLogoPreview={setLogoPreview}
                             includeMargin={includeMargin} setIncludeMargin={setIncludeMargin}
+                            styleOptions={styleOptions} setStyleOptions={setStyleOptions}
                         />
                     </div>
 
@@ -49,6 +63,7 @@ function App() {
                             logoPreview={logoPreview}
                             includeMargin={includeMargin}
                             size={size}
+                            styleOptions={styleOptions}
                             onDownload={handleDownloadStats}
                         />
                     </div>

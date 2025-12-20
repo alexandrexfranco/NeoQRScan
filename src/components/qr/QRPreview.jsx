@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import QRCodeStyling from 'qr-code-styling';
 import { Maximize, Signal, Wifi, Battery, Download, Share2, CheckCircle2 } from 'lucide-react';
 
 const QRPreview = ({
@@ -8,90 +9,76 @@ const QRPreview = ({
     logoPreview,
     includeMargin,
     size,
+    styleOptions,
     onDownload
 }) => {
     const [downloadFormat, setDownloadFormat] = useState('png');
     const [showCopied, setShowCopied] = useState(false);
-    const canvasRef = useRef(null);
-
-    const getBaseQrUrl = (format = 'png', customText = text) => {
-        const margin = includeMargin ? 4 : 0;
-        const cleanFg = fgColor.replace('#', '');
-        const cleanBg = bgColor.replace('#', '');
-        return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(customText)}&color=${cleanFg}&bgcolor=${cleanBg}&margin=${margin}${format === 'svg' ? '&format=svg' : ''}`;
-    };
-
-    const downloadQRCode = async () => {
-        onDownload();
-
-        if (downloadFormat === 'png') {
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
-            const qrImg = new Image();
-            qrImg.crossOrigin = "Anonymous";
-            qrImg.src = getBaseQrUrl('png');
-
-            qrImg.onload = () => {
-                ctx.clearRect(0, 0, size, size);
-                ctx.drawImage(qrImg, 0, 0, size, size);
-                if (logoPreview) {
-                    const logoImg = new Image();
-                    logoImg.src = logoPreview;
-                    logoImg.onload = () => {
-                        const logoSize = size * 0.22;
-                        const x = (size - logoSize) / 2;
-                        const y = (size - logoSize) / 2;
-                        ctx.fillStyle = bgColor;
-                        ctx.beginPath();
-                        if (ctx.roundRect) {
-                            ctx.roundRect(x - 5, y - 5, logoSize + 10, logoSize + 10, logoSize * 0.15);
-                        } else {
-                            ctx.rect(x - 5, y - 5, logoSize + 10, logoSize + 10);
-                        }
-                        ctx.fill();
-                        ctx.drawImage(logoImg, x, y, logoSize, logoSize);
-                        saveCanvas(canvas);
-                    };
-                } else {
-                    saveCanvas(canvas);
-                }
-            };
-        } else {
-            // SVG Download logic
-            try {
-                const response = await fetch(getBaseQrUrl('svg'));
-                let svgText = await response.text();
-                if (logoPreview) {
-                    // Basic SVG logo injection logic
-                    const logoSize = size * 0.22;
-                    const pos = (size - logoSize) / 2;
-                    const logoSvgPart = `
-             <rect x="${pos - 5}" y="${pos - 5}" width="${logoSize + 10}" height="${logoSize + 10}" fill="${bgColor}" rx="${logoSize * 0.15}" />
-             <image x="${pos}" y="${pos}" width="${logoSize}" height="${logoSize}" href="${logoPreview}" />
-           `;
-                    svgText = svgText.replace('</svg>', `${logoSvgPart}</svg>`);
-                }
-                const blob = new Blob([svgText], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `neo-qr-${Date.now()}.svg`;
-                link.click();
-            } catch (err) { console.error(err); }
+    const ref = useRef(null);
+    const [qrCode] = useState(new QRCodeStyling({
+        width: size,
+        height: size,
+        image: logoPreview,
+        dotsOptions: {
+            color: fgColor,
+            type: styleOptions?.dots || 'square'
+        },
+        backgroundOptions: {
+            color: bgColor,
+        },
+        imageOptions: {
+            crossOrigin: "anonymous",
+            margin: includeMargin ? 10 : 0
+        },
+        cornersSquareOptions: {
+            color: fgColor,
+            type: styleOptions?.markerBorder || 'square'
+        },
+        cornersDotOptions: {
+            color: fgColor,
+            type: styleOptions?.markerCenter || 'square'
         }
-    };
+    }));
 
-    const saveCanvas = (canvas) => {
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = `neo-qr-${Date.now()}.png`;
-        link.click();
+    useEffect(() => {
+        qrCode.update({
+            data: text,
+            dotsOptions: {
+                color: fgColor,
+                type: styleOptions?.dots || 'square'
+            },
+            backgroundOptions: {
+                color: bgColor,
+            },
+            image: logoPreview,
+            imageOptions: {
+                margin: includeMargin ? 10 : 0
+            },
+            cornersSquareOptions: {
+                color: fgColor,
+                type: styleOptions?.markerBorder || 'square'
+            },
+            cornersDotOptions: {
+                color: fgColor,
+                type: styleOptions?.markerCenter || 'square'
+            }
+        });
+        if (ref.current) {
+            ref.current.innerHTML = '';
+            qrCode.append(ref.current);
+        }
+    }, [text, fgColor, bgColor, logoPreview, includeMargin, styleOptions, qrCode]);
+
+    const downloadQRCode = () => {
+        onDownload();
+        qrCode.download({
+            extension: downloadFormat,
+            name: `neo-qr-${Date.now()}`
+        });
     };
 
     return (
         <div className="relative w-full max-w-[280px] md:max-w-[300px] h-auto min-h-[500px] md:h-[600px] aspect-[9/18] md:aspect-auto bg-slate-950 rounded-[2rem] md:rounded-[3.5rem] border-[6px] md:border-[8px] border-slate-800 shadow-2xl overflow-hidden mx-auto transition-all bg-black">
-            <canvas ref={canvasRef} width={size} height={size} className="hidden" />
-
             <div className="absolute top-0 inset-x-0 h-10 flex items-center justify-between px-6 md:px-8 z-20">
                 <span className="text-[10px] font-bold text-white/70">12:45</span>
                 <div className="flex items-center gap-1.5 text-white/70"><Signal size={10} /><Wifi size={10} /><Battery size={10} className="rotate-90" /></div>
@@ -106,15 +93,8 @@ const QRPreview = ({
                     <p className="text-[8px] md:text-[9px] text-slate-500 uppercase">Live Preview</p>
                 </div>
 
-                <div className="relative w-full aspect-square bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 shadow-2xl flex-shrink-0">
-                    <img src={getBaseQrUrl('png')} alt="Neo QR" className="w-full h-full rounded-lg" />
-                    {logoPreview && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="p-1 rounded-lg" style={{ backgroundColor: bgColor }}>
-                                <img src={logoPreview} className="w-8 h-8 md:w-10 md:h-10 object-contain rounded" alt="Logo" />
-                            </div>
-                        </div>
-                    )}
+                <div className="relative w-full aspect-square bg-white rounded-2xl md:rounded-3xl p-3 md:p-4 shadow-2xl flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    <div ref={ref} className="w-full h-full flex items-center justify-center [&>canvas]:max-w-full [&>canvas]:max-h-full" />
                 </div>
 
                 <div className="mt-auto w-full space-y-3 md:space-y-4 pb-4 pt-6">

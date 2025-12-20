@@ -20,7 +20,7 @@ function setup() {
     let sheet = ss.getSheetByName('Logs');
     if (!sheet) {
         sheet = ss.insertSheet('Logs');
-        sheet.appendRow(['Timestamp', 'Type', 'Format', 'UserAgent']);
+        sheet.appendRow(['Timestamp', 'Type', 'Format', 'Content', 'UserAgent']);
     }
 }
 
@@ -33,6 +33,7 @@ function doPost(e) {
             new Date(),
             data.type || 'scan',
             data.format || 'unknown',
+            data.content || '',
             data.userAgent || 'unknown'
         ]);
 
@@ -42,4 +43,12 @@ function doPost(e) {
         return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
             .setMimeType(ContentService.MimeType.JSON);
     }
+}
+
+function doGet(e) {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Logs');
+    const count = Math.max(0, sheet.getLastRow() - 1); // Subtract header
+
+    return ContentService.createTextOutput(JSON.stringify({ count: count }))
+        .setMimeType(ContentService.MimeType.JSON);
 }

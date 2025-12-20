@@ -21,20 +21,18 @@ const QRForm = ({
     fgColor, setFgColor,
     bgColor, setBgColor,
     logoPreview, setLogoPreview,
-    includeMargin, setIncludeMargin
+    includeMargin, setIncludeMargin,
+    styleOptions, setStyleOptions
 }) => {
     const [waNumber, setWaNumber] = useState('');
     const [waMessage, setWaMessage] = useState('');
-    const [aiMode, setAiMode] = useState('content');
-    const [aiPrompt, setAiPrompt] = useState('');
-    const [isAiLoading, setIsAiLoading] = useState(false);
-    const [aiError, setAiError] = useState('');
+    // Removed AI state as it's being replaced with Style options
 
     const tabs = [
         { id: 'url', Icon: LinkIcon, label: 'URL' },
         { id: 'whatsapp', Icon: MessageCircle, label: 'WHATSAPP' },
         { id: 'wifi', Icon: WifiIcon, label: 'WI-FI' },
-        { id: 'ai', Icon: Sparkles, label: 'AI MAGIC' },
+        { id: 'style', Icon: Palette, label: 'ESTILO' },
         { id: 'text', Icon: Type, label: 'TEXTO' },
         { id: 'email', Icon: Mail, label: 'E-MAIL' }
     ];
@@ -62,24 +60,7 @@ const QRForm = ({
         setter(formatted);
     };
 
-    const handleGenerateAI = async () => {
-        if (!aiPrompt.trim()) return;
-        setIsAiLoading(true);
-        setAiError('');
-        try {
-            const result = await callGemini(aiPrompt, aiMode);
-            if (aiMode === 'style') {
-                if (result.fgColor) setFgColor(result.fgColor);
-                if (result.bgColor) setBgColor(result.bgColor);
-            } else {
-                setText(result);
-            }
-        } catch (e) {
-            setAiError("Erro na IA: " + e.message);
-        } finally {
-            setIsAiLoading(false);
-        }
-    };
+
 
     return (
         <div className="space-y-6">
@@ -126,26 +107,54 @@ const QRForm = ({
                         </div>
                     )}
 
-                    {activeTab === 'ai' && (
+                    {activeTab === 'style' && (
                         <div className="space-y-6">
-                            <div className="flex bg-black/40 p-1 rounded-xl border border-white/10">
-                                <button onClick={() => setAiMode('content')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${aiMode === 'content' ? 'bg-cyan-500 text-black shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Wand2 size={12} /> Conteúdo
-                                </button>
-                                <button onClick={() => setAiMode('style')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-[10px] font-bold uppercase transition-all ${aiMode === 'style' ? 'bg-purple-500 text-black shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}>
-                                    <Palette size={12} /> Tema
-                                </button>
+                            <div className="grid grid-cols-1 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-slate-500 uppercase font-bold">Estilo dos Pontos</label>
+                                    <select
+                                        value={styleOptions.dots}
+                                        onChange={(e) => setStyleOptions({ ...styleOptions, dots: e.target.value })}
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
+                                    >
+                                        <option value="square">Quadrado (Padrão)</option>
+                                        <option value="dots">Bolinhas</option>
+                                        <option value="rounded">Arredondado</option>
+                                        <option value="extra-rounded">Extra Redondo</option>
+                                        <option value="classy">Elegante</option>
+                                        <option value="classy-rounded">Elegante Redondo</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-slate-500 uppercase font-bold">Moldura dos Cantos</label>
+                                    <select
+                                        value={styleOptions.markerBorder}
+                                        onChange={(e) => setStyleOptions({ ...styleOptions, markerBorder: e.target.value })}
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
+                                    >
+                                        <option value="square">Quadrado</option>
+                                        <option value="dot">Bolinha</option>
+                                        <option value="extra-rounded">Arredondado</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] text-slate-500 uppercase font-bold">Centro dos Cantos</label>
+                                    <select
+                                        value={styleOptions.markerCenter}
+                                        onChange={(e) => setStyleOptions({ ...styleOptions, markerCenter: e.target.value })}
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
+                                    >
+                                        <option value="square">Quadrado</option>
+                                        <option value="dot">Bolinha</option>
+                                    </select>
+                                </div>
                             </div>
-                            <textarea
-                                value={aiPrompt}
-                                onChange={(e) => setAiPrompt(e.target.value)}
-                                placeholder={aiMode === 'content' ? "Ex: Uma rede Wifi para visitas..." : "Ex: Um tema Cyberpunk..."}
-                                className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-white h-32 outline-none resize-none text-sm"
-                            />
-                            {aiError && <div className="text-red-400 text-xs">{aiError}</div>}
-                            <button onClick={handleGenerateAI} disabled={isAiLoading || !aiPrompt.trim()} className="w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-xs uppercase bg-cyan-500 text-white">
-                                {isAiLoading ? 'Processando...' : 'Gerar com IA'}
-                            </button>
+
+                            <div className="bg-cyan-500/10 border border-cyan-500/20 p-4 rounded-xl text-[10px] text-cyan-300">
+                                <p>💡 Combine diferentes estilos para criar um QR Code único!</p>
+                            </div>
                         </div>
                     )}
 
