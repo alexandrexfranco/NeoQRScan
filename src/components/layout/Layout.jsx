@@ -9,6 +9,18 @@ const Layout = ({ children }) => {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] md:w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[80px] md:blur-[120px]" />
             </div>
             {children}
+
+            <footer className="w-full text-center py-6 text-xs text-slate-600 space-y-2 relative z-20">
+                <p>Desenvolvido por: <span className="text-slate-400 font-bold">Alexandre O. Franco</span></p>
+                <a
+                    href="https://www.linkedin.com/in/alexandrexfranco/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-cyan-700/70 hover:text-cyan-500 transition-colors"
+                >
+                    Rede social Linkedin
+                </a>
+            </footer>
         </div>
     );
 };
