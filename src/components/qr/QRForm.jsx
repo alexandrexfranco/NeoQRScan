@@ -29,10 +29,10 @@ const QRForm = ({
     // Removed AI state as it's being replaced with Style options
 
     const tabs = [
+        { id: 'style', Icon: Palette, label: 'ESTILO' },
         { id: 'url', Icon: LinkIcon, label: 'URL' },
         { id: 'whatsapp', Icon: MessageCircle, label: 'WHATSAPP' },
         { id: 'wifi', Icon: WifiIcon, label: 'WI-FI' },
-        { id: 'style', Icon: Palette, label: 'ESTILO' },
         { id: 'text', Icon: Type, label: 'TEXTO' },
         { id: 'email', Icon: Mail, label: 'E-MAIL' }
     ];
@@ -117,12 +117,12 @@ const QRForm = ({
                                         onChange={(e) => setStyleOptions({ ...styleOptions, dots: e.target.value })}
                                         className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
                                     >
-                                        <option value="square">Quadrado (Padrão)</option>
-                                        <option value="dots">Bolinhas</option>
-                                        <option value="rounded">Arredondado</option>
-                                        <option value="extra-rounded">Extra Redondo</option>
-                                        <option value="classy">Elegante</option>
-                                        <option value="classy-rounded">Elegante Redondo</option>
+                                        <option value="square" className="bg-slate-900 text-white">Quadrado (Padrão)</option>
+                                        <option value="dots" className="bg-slate-900 text-white">Bolinhas</option>
+                                        <option value="rounded" className="bg-slate-900 text-white">Arredondado</option>
+                                        <option value="extra-rounded" className="bg-slate-900 text-white">Extra Redondo</option>
+                                        <option value="classy" className="bg-slate-900 text-white">Elegante</option>
+                                        <option value="classy-rounded" className="bg-slate-900 text-white">Elegante Redondo</option>
                                     </select>
                                 </div>
 
@@ -133,9 +133,9 @@ const QRForm = ({
                                         onChange={(e) => setStyleOptions({ ...styleOptions, markerBorder: e.target.value })}
                                         className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
                                     >
-                                        <option value="square">Quadrado</option>
-                                        <option value="dot">Bolinha</option>
-                                        <option value="extra-rounded">Arredondado</option>
+                                        <option value="square" className="bg-slate-900 text-white">Quadrado</option>
+                                        <option value="dot" className="bg-slate-900 text-white">Bolinha</option>
+                                        <option value="extra-rounded" className="bg-slate-900 text-white">Arredondado</option>
                                     </select>
                                 </div>
 
@@ -146,8 +146,8 @@ const QRForm = ({
                                         onChange={(e) => setStyleOptions({ ...styleOptions, markerCenter: e.target.value })}
                                         className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white text-xs outline-none focus:border-cyan-500/50"
                                     >
-                                        <option value="square">Quadrado</option>
-                                        <option value="dot">Bolinha</option>
+                                        <option value="square" className="bg-slate-900 text-white">Quadrado</option>
+                                        <option value="dot" className="bg-slate-900 text-white">Bolinha</option>
                                     </select>
                                 </div>
                             </div>
